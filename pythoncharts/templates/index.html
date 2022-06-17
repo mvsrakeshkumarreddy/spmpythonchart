@@ -1,0 +1,192 @@
+{% include 'applayout.html' %}
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+   <div ng-app="chartApp" ng-controller="myCtrl">
+   <!--
+      <input type="text" name="something" value="{{ today }}">
+       -->
+   <div class="container">
+   <div class="row justify-content-md-center">
+      <form action="" method="POST">
+         <div ng-show = showdistspdform>
+            {% csrf_token %}
+            <div class="input-group">
+               <label class="col-sm-2 col-form-label">Please enter starting station:</label><br>
+            </div>
+            <div class="col-sm-10">
+               <input class="form-control" type="text" name="ststn" required="required" value="{{ sstn }}">
+            </div>
+            <div class="input-group">
+               <label class="col-sm-2 col-form-label">Please enter Distance values:</label><br>
+            </div>
+            <div class="col-sm-10">
+               <textarea class="form-control" ng-model="distlist" ng-list="&#10;" ng-trim="false" name="distlist" required="required"></textarea>
+            </div>
+            <div class="input-group">
+               <label class="col-sm-2 col-form-label">Please enter Speed values:</label><br>
+            </div>
+            <div class="col-sm-10">
+               <textarea  class="form-control"ng-model="spdlist" ng-list="&#10;" ng-trim="false" name="spdlist" required="required"></textarea>
+            </div>
+            <br>
+            <div class="input-group">
+               <div class="input-group-text">
+                  <input class="form-check-input mt-0" type="checkbox" name="spmtype" value="telpro">
+               </div>
+               <p>&nbsp;</p>
+               <div>
+                  <label class="col-form-label">Distance values whether of type incrementive</label>
+               </div>
+            </div>
+            <br>
+            <div class="input-group">
+               <div class="input-group-text">
+                  <input class="form-check-input mt-0" type = "checkbox" ng-model = "enterplot" value="Enter from to plot details" ng-click = distspdvalues() ng-disabled = "enterplotdisabled"><br>
+               </div>
+               <p>&nbsp;</p>
+               <div>
+                  <label class="col-form-label">Would you like to enter from to plot details</label>
+               </div>
+            </div>
+            <br>
+            <div class="input-group" ng-show = "showfullgraphdiv">
+               <div class="input-group-text">
+                  <input class="form-check-input mt-0" type = "checkbox" ng-model = "showfullgraph" value="Enter from to plot details" ng-click = showfullgraphfun()>
+                  <br>
+               </div>
+               <p>&nbsp;</p>
+               <div>
+                  <label class="col-form-label">Would you like to show full graph</label>
+               </div>
+            </div>
+            <br>
+            <button class="btn btn-primary" type="submit" value="submit" ng-show = "showfullgraph">Show full graph</button>
+            <div ng-show = showplotinput>
+               <div class="input-group">
+                  <label class="col-sm-2 col-form-label">Please enter starting station for which plot is required:</label><br>
+               </div>
+               <div class="col-sm-10">
+                  <input class="form-control" type="text" name="pltststn" required="required" ng-model = "pltststn" ng-disabled = "!showplotinput">
+               </div>
+               <br>
+               <div class="input-group">
+                  <label class="col-sm-2 col-form-label">Please enter ending station for which plot is required:</label><br>
+               </div>
+               <div class="col-sm-10">
+                  <input class="form-control" type="text" name="pltendstn" required="required" ng-model = "pltendstn" ng-disabled = "!showplotinput">
+               </div>
+               <br>
+               <button class="btn btn-primary" type="submit" value="submit">Submit</button>
+            </div>
+      </form>
+      </div>
+
+   </div>
+   <img src='data:image/png;base64,{{ chart }}' alt="" id="img">
+   <!--
+      <textarea ng-model="signalkm" ng-list="&#10;" ng-trim="false"></textarea>
+      <p ng-bind="signalkm"></p>
+      
+      
+      <textarea ng-model="signalname" ng-list="&#10;" ng-trim="false"></textarea>
+      <p ng-bind="signalname"></p>
+      <p>Welcome {{today}}</p>
+        <p>Name: <input type="text" ng-model="name"></p>
+        <p ng-bind="list1"></p>
+        <input type="submit" ng-click=check() value="submit">
+      
+      <textarea ng-model="list1" ng-list="&#10;" ng-trim="false"></textarea>
+      
+      </div>
+      
+      <p>Welcome to my first Django project! {{minvalue}}</p>
+      <p>you have entered  {{inputvalue}}</p>
+      -->
+   <!--
+      <form action = "" method = "POST">
+        {% csrf_token %}
+        <label for="ivalue">Your name: </label>
+        <input id="ivalue" type="text" name="ivalue">
+        <input type="submit" value="OK">
+      </form>
+      -->
+   <script>
+      var app = angular.module('chartApp', []);
+      app.controller('myCtrl', function($scope) {
+        $scope.name= "Rakesh";
+        $scope.showdistspdform = true;
+        $scope.showplotinput = false;
+        $scope.enterplotdisabled = false;
+        $scope.showfullgraphdiv = true;
+      
+        $scope.distspdvalues = function()
+        {
+          if ($scope.enterplot == true)
+          {
+            $scope.showfullgraphdiv = false;
+            $scope.showfullgraph = false;
+            $scope.showplotinput  = true;
+          }
+          if ($scope.enterplot == false)
+          {
+            $scope.showfullgraphdiv = true;
+            $scope.showfullgraph = false;
+            $scope.showplotinput  = false;
+          }
+          //$scope.showdistspdform = false;
+          
+        };
+        $scope.firstcheck = function()
+        {
+          if ($scope.enterplotagain == true)
+          {
+            $scope.startfrombegin = false;
+          }
+        };
+        $scope.secondcheck  = function()
+        {
+          if ($scope.startfrombegin == true)
+          {
+            $scope.enterplotagain = false;
+          }
+        };
+        $scope.distspdvaluesinv = function()
+        {
+          $scope.repeatselect = true;
+        };
+        $scope.repeatfunction = function()
+        {
+          if ($scope.enterplotagain == true)
+          {
+            $scope.repeatselect = false;
+            $scope.showplotinput = true;
+          }
+          if ($scope.startfrombegin == true)
+          {
+            $scope.repeatselect = false;
+            $scope.showdistspdform = true;
+          }
+        };
+        $scope.showfullgraphfun  = function()
+        {
+            if ($scope.enterplotdisabled == true)
+            {
+      
+              $scope.enterplotdisabled = false;
+            }
+            else if ($scope.enterplotdisabled == false)
+            {
+      
+              $scope.enterplotdisabled = true;
+            }
+        };
+        $scope.check = function()
+        {
+          $scope.yes = true;
+        };
+        
+      });
+   </script>
+</body>
+{% endblock %}
